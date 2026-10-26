@@ -1,0 +1,21 @@
+# Build outputs
+/build/
+/entry/build/
+/entry/.preview/
+/entry/.test/
+/.hvigor/
+/.hvigor-cache/
+/oh_modules/
+/entry/oh_modules/
+/node_modules/
+
+# IDE
+/.idea/
+/.vscode/
+*.iml
+local.properties
+.gitconfig.local
+
+# Logs / temp
+*.log
+/coverage/

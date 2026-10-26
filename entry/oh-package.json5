@@ -1,0 +1,11 @@
+{
+  "name": "entry",
+  "version": "1.0.0",
+  "description": "DormLink entry module",
+  "main": "",
+  "author": "zhaoshuo",
+  "license": "MIT",
+  "dependencies": {
+    "@ohos/hypium": "1.0.13"
+  }
+}
