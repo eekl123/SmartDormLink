@@ -192,8 +192,24 @@ CREATE TABLE IF NOT EXISTS trigger_log (
 - 规则条件只支持单指标阈值比较（含 `=`），暂不支持跨指标运算或时间条件。
 - UI 采用原生组件与固定配色，未做深色模式与横屏适配。
 - 动画使用全局 `animateTo`；多窗口/多实例场景下更稳妥的写法是 `UIContext.animateTo`（见 `docs/资料核查与新技术笔记.md`）。
+- **测试环境**：本次开发环境的 ohpm 仓库（`repo.harmonyos.com`）不可达，无法安装 `@ohos/hypium`，
+  因此 `entry/src/test` 下的 Hypium 用例未能在本机实际执行；与之逻辑一一对应的 36 条用例已通过
+  `node --test` 真实运行（`tests 36 / pass 36 / fail 0`）。在 DevEco 里运行 Hypium 前需先完成依赖同步。
+- **运行截图与录屏**：本机没有已部署的模拟器 AVD，也没有可用真机（安装 HAP 需账号签名），
+  故以 `docs/截图与录屏清单.md` 的拍摄脚本交付，不提供替代性的示意图冒充真实运行结果。
 
-## 九、提交说明
+## 九、证据文件
+
+| 文件 | 内容 |
+| --- | --- |
+| `docs/evidence/test-output.txt` | 36 条用例的完整运行输出（可复现） |
+| `docs/evidence/build-output.txt` | `scripts/build.ps1` 的完整构建日志（BUILD SUCCESSFUL + HAP 大小） |
+| `docs/images/architecture.png` | 系统架构图（`tools/report/make_diagrams.py` 生成） |
+| `docs/images/rule_flow.png` | 规则执行与冲突裁决流程图 |
+
+报告生成：`python tools/report/make_report.py`（从 `git log` 取提交记录、从源码抽取代码片段、从证据文件取测试结果）。
+
+## 十、提交说明
 
 - 本仓库为个人独立完成，全部代码由本人提交。
 - 报告：`鸿蒙高级应用开发工程师认证-20230313230-赵硕-期末大作业报告.docx`（单独提交）。
