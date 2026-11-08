@@ -189,7 +189,7 @@ def placeholder(doc, text):
 
 # ---------------------------------------------------------------- repo facts
 
-def git_log(limit=14):
+def git_log(limit=20):
     out = subprocess.run(['git', 'log', '--pretty=format:%h|%ad|%s', '--date=short',
                           '-n', str(limit)], cwd=ROOT, capture_output=True)
     rows = []
