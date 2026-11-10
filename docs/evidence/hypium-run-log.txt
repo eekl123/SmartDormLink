@@ -1,0 +1,24 @@
+[Hypium][suite start]DormLinkRuleEngine
+[Hypium][pass]normal_high_temperature_fires_fan ; consuming 2ms
+[Hypium][pass]normal_dual_condition_requires_both ; consuming 0ms
+[Hypium][pass]boundary_gte_equal_threshold ; consuming 0ms
+[Hypium][pass]boundary_level_clamped_to_range ; consuming 1ms
+[Hypium][pass]boundary_cooldown_blocks_repeat_fire ; consuming 1ms
+[Hypium][pass]exception_missing_device_action_skipped ; consuming 1ms
+[Hypium][pass]conflict_higher_priority_wins ; consuming 1ms
+[Hypium][pass]normal_seed_rules_cover_four_devices ; consuming 0ms
+[Hypium][suite start]DormLinkRuleValidator
+[Hypium][pass]normal_valid_rule_passes ; consuming 0ms
+[Hypium][pass]exception_empty_name_rejected ; consuming 1ms
+[Hypium][pass]exception_unknown_device_rejected ; consuming 0ms
+[Hypium][pass]boundary_threshold_out_of_metric_range ; consuming 0ms
+[Hypium][pass]boundary_priority_out_of_range ; consuming 1ms
+[Hypium][pass]boundary_rule_count_limit ; consuming 0ms
+[Hypium][suite start]DormLinkPersistenceCodec
+[Hypium][pass]normal_snapshot_round_trip ; consuming 1ms
+[Hypium][pass]normal_restart_restores_device_state ; consuming 2ms
+[Hypium][pass]exception_corrupted_json_returns_null ; consuming 3ms
+[Hypium][pass]exception_future_version_rejected ; consuming 0ms
+[Hypium][pass]boundary_v1_snapshot_migrated ; consuming 1ms
+[Hypium][pass]boundary_dirty_fields_sanitized ; consuming 1ms
+OHOS_REPORT_RESULT: stream=Tests run: 20, Failure: 0, Error: 0, Pass: 20, Ignore: 0
