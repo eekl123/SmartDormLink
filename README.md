@@ -171,8 +171,27 @@ CREATE TABLE IF NOT EXISTS trigger_log (
 | `tools/tests/validator.test.ts` | 11 | 合法规则、编辑自身不误报重名、空名/重名/超长、空条件/空动作、条件数 3 与 4 的边界、阈值端点与越界、优先级 1/10/0/11/小数、动作 level 0/100/101、设备不存在、冷却 3600/3601、规则数上限 12 |
 | `tools/tests/codec.test.ts` | 9 | 快照往返、改环境→触发→保存→重启恢复全链路、空/坏 JSON、版本过新、v1 迁移、脏字段清洗、空规则列表、200 次往返性能 |
 
-实测结果（本机）：`tests 36 / pass 36 / fail 0`，耗时约 0.2s。
-完整输出见报告第 5 章；复现命令见 4.3。
+### 6.1 Node 直跑（`node --test`）
+
+实测：`tests 36 / pass 36 / fail 0`，耗时约 0.2s。输出见 `docs/evidence/test-output.txt`。
+
+### 6.2 DevEco 本地单测（Hypium 1.0.13，真机同款运行时）
+
+`entry/src/test` 下 20 条 Hypium 用例经 `hvigor test` 实际执行：
+
+```
+Tests run: 20, Failure: 0, Error: 0, Pass: 20, Ignore: 0
+覆盖率：行 73.7%（417/566） / 函数 75.0%（33/44） / 分支 60.1%（113/188）
+```
+
+| 套件 | 用例 |
+| --- | --- |
+| `DormLinkRuleEngine` | 8 条：命中、双条件、gte 边界、裁剪、冷却、缺失设备、优先级冲突、种子数据 |
+| `DormLinkRuleValidator` | 6 条：合法、空名、未知设备、阈值越界、优先级越界、数量上限 |
+| `DormLinkPersistenceCodec` | 6 条：往返、重启恢复、坏 JSON、版本过新、v1 迁移、脏字段 |
+
+证据：`docs/evidence/hypium-test-result.txt`（逐条 Success）、`hypium-coverage-summary.json`、
+`hypium-run-log.txt`（Hypium 运行日志）。复现：`hvigor ... test` 或 DevEco 中运行 `entry/src/test/List.test.ets`。
 
 ## 七、截图与录屏
 
@@ -192,18 +211,19 @@ CREATE TABLE IF NOT EXISTS trigger_log (
 - 规则条件只支持单指标阈值比较（含 `=`），暂不支持跨指标运算或时间条件。
 - UI 采用原生组件与固定配色，未做深色模式与横屏适配。
 - 动画使用全局 `animateTo`；多窗口/多实例场景下更稳妥的写法是 `UIContext.animateTo`（见 `docs/资料核查与新技术笔记.md`）。
-- **测试环境**：本次开发环境的 ohpm 仓库（`repo.harmonyos.com`）不可达，无法安装 `@ohos/hypium`，
-  因此 `entry/src/test` 下的 Hypium 用例未能在本机实际执行；与之逻辑一一对应的 36 条用例已通过
-  `node --test` 真实运行（`tests 36 / pass 36 / fail 0`）。在 DevEco 里运行 Hypium 前需先完成依赖同步。
-- **运行截图与录屏**：本机没有已部署的模拟器 AVD，也没有可用真机（安装 HAP 需账号签名），
-  故以 `docs/截图与录屏清单.md` 的拍摄脚本交付，不提供替代性的示意图冒充真实运行结果。
+- **运行截图与录屏**：本机没有已部署的模拟器 AVD，也没有可用真机；而 HAP 安装必须使用由华为账号
+  生成的调试签名（DevEco「自动签名」），无法在无账号登录的情况下完成。故以
+  `docs/截图与录屏清单.md` 的拍摄脚本交付，不提供替代性的示意图冒充真实运行结果。
 
 ## 九、证据文件
 
 | 文件 | 内容 |
 | --- | --- |
-| `docs/evidence/test-output.txt` | 36 条用例的完整运行输出（可复现） |
-| `docs/evidence/build-output.txt` | `scripts/build.ps1` 的完整构建日志（BUILD SUCCESSFUL + HAP 大小） |
+| `docs/evidence/test-output.txt` | Node 侧 36 条用例的完整运行输出（可复现） |
+| `docs/evidence/hypium-test-result.txt` | Hypium 20 条用例逐条 Success 的原始结果 |
+| `docs/evidence/hypium-coverage-summary.json` | Hypium 覆盖率汇总（行 73.7% / 函数 75% / 分支 60.1%） |
+| `docs/evidence/hypium-run-log.txt` | Hypium 运行时日志（含每条用例的 pass 记录） |
+| `docs/evidence/build-output.txt` | hvigor 完整构建日志（BUILD SUCCESSFUL） |
 | `docs/images/architecture.png` | 系统架构图（`tools/report/make_diagrams.py` 生成） |
 | `docs/images/rule_flow.png` | 规则执行与冲突裁决流程图 |
 
