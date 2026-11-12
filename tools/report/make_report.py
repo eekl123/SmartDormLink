@@ -628,6 +628,9 @@ def build_content(doc):
     body(doc, '为了让测试跑的就是 App 里的那份逻辑，测试文件直接 import 应用源码中的 '
               'DormLinkDomain.ts（Node.js 24 的类型擦除可以执行 .ts），'
               '运行命令为 node --test tools/tests/*.test.ts，不引入任何测试框架依赖。')
+    body(doc, '同时，为了使测试证据落在 HarmonyOS 自己的运行时上，又在 entry/src/test 下用 Hypium 1.0.13 '
+              '复刻了同一批核心用例，通过 hvigor 的本地单测任务（hvigor ... test）在 PC 的 ArkTS 运行时中执行，'
+              '并开启覆盖率统计。两套测试共用同一份领域层源码，因此任何逻辑改动都能被两边同时回归到。')
 
     heading(doc, '5.2. 测试结果', 2)
     body(doc, f'本机实测结果：{summary}，耗时约 0.2 秒。下表列出 12 条代表性用例的输入、预期与实际结果，'
@@ -669,6 +672,17 @@ def build_content(doc):
     body(doc, '可以看出断言都在检查具体行为而不是“跑通即可”：例如冲突用例会同时断言“生效的是 90% 而不是 40%”'
               '与“conflicts 长度为 1 且 winner 是高优先级规则”，冷却用例会对比 now 与 now+31s 两次结果。'
               '这套用例在本项目里承担回归职责——每次改领域层后重跑一遍，0.2 秒就能知道有没有破坏既有规则。')
+
+    body(doc, '第二套证据来自 HarmonyOS 自己的运行时。把同样的核心用例用 Hypium 1.0.13 写进 entry/src/test，'
+              '执行 hvigor 的本地单测任务后得到：Tests run: 20, Failure: 0, Error: 0, Pass: 20, Ignore: 0；'
+              '覆盖率统计显示领域层 DormLinkDomain.ts 行覆盖 73.7%（417/566）、函数覆盖 75.0%（33/44）、'
+              '分支覆盖 60.1%（113/188）。三个测试套件 DormLinkRuleEngine、DormLinkRuleValidator、'
+              'DormLinkPersistenceCodec 的每条用例均为 Success，原始结果见 docs/evidence/hypium-test-result.txt，'
+              '覆盖率汇总见 hypium-coverage-summary.json，运行日志见 hypium-run-log.txt。')
+    body(doc, '需要说明的是，这两套测试不是重复劳动：Node 侧便于快速试错与 CI（不依赖 SDK 与 ohpm），'
+              'Hypium 侧则证明代码在 ArkTS 运行时的语义下同样成立（例如对象字面量、类型断言、'
+              '数组与字符串处理在 ArkTS 编译后行为一致）。上表 5.1 中列出的 12 条用例在两套环境里都被执行过，'
+              '结果一致。')
 
     heading(doc, '5.3. 问题与修复', 2)
     body(doc, '问题一：工程放在中文目录时 hvigor 直接拒绝构建。现象是执行构建后立刻报'
