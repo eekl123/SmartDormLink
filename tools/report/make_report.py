@@ -30,8 +30,8 @@ OUTPUT = os.path.join(WORKSPACE, '鸿蒙高级应用开发工程师认证-202303
 STUDENT = '赵硕'
 STUDENT_ID = '20230313230'
 CLASS_NAME = '23 物联网工程 2 班'
-GITHUB_USER = '【待填写：本人 GitHub 用户名】'
-REPO_URL = '【待填写：GitHub 仓库完整 URL】'
+GITHUB_USER = 'Eekl123'
+REPO_URL = 'https://github.com/Eekl123/SmartDormLink'
 
 BODY_FONT = '宋体'
 CODE_FONT = 'Consolas'
@@ -189,7 +189,7 @@ def placeholder(doc, text):
 
 # ---------------------------------------------------------------- repo facts
 
-def git_log(limit=20):
+def git_log(limit=30):
     out = subprocess.run(['git', 'log', '--pretty=format:%h|%ad|%s', '--date=short',
                           '-n', str(limit)], cwd=ROOT, capture_output=True)
     rows = []
