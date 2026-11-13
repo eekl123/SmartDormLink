@@ -2,7 +2,7 @@
 
 > 《鸿蒙高级应用开发工程师认证》期末大作业 · 选题三「联动实验室」
 > 学生：赵硕（20230313230，23 物联 2 班） · 独立完成
-> GitHub 账号：**Eekl123** · 仓库地址：**https://github.com/Eekl123/SmartDormLink**
+> GitHub 账号：**Eekl123** · 仓库地址：**https://github.com/eekl123/SmartDormLink**
 
 DormLink 是一个跑在 HarmonyOS 手机/平板上的**智能宿舍联动规则编排 + 模拟演练**应用。
 用户自己定义「满足什么条件 → 执行哪些设备动作」的自动化规则，拖动模拟环境滑块或用预设场景一键演练，

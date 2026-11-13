@@ -31,7 +31,7 @@ STUDENT = '赵硕'
 STUDENT_ID = '20230313230'
 CLASS_NAME = '23 物联网工程 2 班'
 GITHUB_USER = 'Eekl123'
-REPO_URL = 'https://github.com/Eekl123/SmartDormLink'
+REPO_URL = 'https://github.com/eekl123/SmartDormLink'
 
 BODY_FONT = '宋体'
 CODE_FONT = 'Consolas'
