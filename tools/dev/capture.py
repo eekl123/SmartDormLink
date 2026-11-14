@@ -24,6 +24,7 @@ HDC = r"E:\DevEco Studio\sdk\default\openharmony\toolchains\hdc.exe"
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 OUT = os.path.join(ROOT, "docs", "images")
+CACHE = os.path.join(ROOT, "docs", ".cache")
 REMOTE = "/data/local/tmp"
 
 
@@ -55,8 +56,9 @@ def shot(name: str) -> bool:
     hdc("shell", "snapshot_display", "-f", remote, timeout=90)
     local = os.path.join(OUT, f"{name}.png")
     os.makedirs(OUT, exist_ok=True)
+    os.makedirs(CACHE, exist_ok=True)
     # pull as jpeg first, convert to png for uniform naming
-    tmp = os.path.join(OUT, f"_{name}.jpeg")
+    tmp = os.path.join(CACHE, f"_{name}.jpeg")
     out = hdc("file", "recv", remote, tmp, timeout=90)
     if not os.path.exists(tmp):
         print(f"  ! snapshot failed: {out.strip()[:160]}")
@@ -105,7 +107,7 @@ def tap(x: int, y: int) -> None:
 
 def dump_layout() -> list[dict]:
     remote = f"{REMOTE}/layout.json"
-    local = os.path.join(OUT, "_layout.json")
+    local = os.path.join(CACHE, "layout.json")
     hdc("shell", "rm", "-f", remote)
     hdc("shell", "uitest", "dumpLayout", "-p", remote, timeout=90)
     hdc("file", "recv", remote, local, timeout=90)

@@ -22,3 +22,7 @@ local.properties
 
 # transient screen-capture frames
 docs/video_frames/
+# python / capture caches
+docs/.cache/
+__pycache__/
+*.pyc

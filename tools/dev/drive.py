@@ -17,7 +17,8 @@ HDC = r"E:\DevEco Studio\sdk\default\openharmony\toolchains\hdc.exe"
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 OUT = os.path.join(ROOT, "docs", "images")
-TMP = os.path.join(ROOT, "docs", "images", "_tmp")
+CACHE = os.path.join(ROOT, "docs", ".cache")
+TMP = os.path.join(ROOT, "docs", ".cache")
 PKG = "com.zhaoshuo.dormlink"
 W, H = 1260, 2720
 TAB_Y = 2625
@@ -135,6 +136,7 @@ def restart_app(wait: float = 9.0) -> None:
 
 def main() -> None:
     os.makedirs(OUT, exist_ok=True)
+    os.makedirs(CACHE, exist_ok=True)
     os.makedirs(TMP, exist_ok=True)
 
     print("== 0. restart app to a known state")

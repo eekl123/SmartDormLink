@@ -29,7 +29,7 @@ OUTPUT = os.path.join(WORKSPACE, '鸿蒙高级应用开发工程师认证-202303
 
 STUDENT = '赵硕'
 STUDENT_ID = '20230313230'
-CLASS_NAME = '23 物联网工程 2 班'
+CLASS_NAME = '23 物联 2 班'
 GITHUB_USER = 'eekl123'
 REPO_URL = 'https://github.com/eekl123/SmartDormLink'
 
@@ -274,13 +274,13 @@ def prepare(doc):
     for p in doc.paragraphs:
         text = p.text.strip()
         if text.startswith('班') and '级' in text and '物联' in text:
-            rewrite_cover(p, '班    级：         ' + CLASS_NAME)
+            fill_cover_value(p, CLASS_NAME)
             replaced['班'] += 1
         elif text.startswith('学生姓名'):
-            rewrite_cover(p, '学生姓名：         ' + STUDENT)
+            fill_cover_value(p, STUDENT)
             replaced['学生姓名'] += 1
         elif text.startswith('学') and '号' in text and len(text) < 16:
-            rewrite_cover(p, '学    号：         ' + STUDENT_ID)
+            fill_cover_value(p, STUDENT_ID)
             replaced['学'] += 1
 
     # delete the body (everything from the first "项目概述" Heading 1 onwards)
@@ -311,19 +311,42 @@ def prepare(doc):
     return replaced
 
 
-def rewrite_cover(p, text):
-    size = 14
-    bold = False
-    for run in p.runs:
-        if run.font.size:
-            size = run.font.size.pt
-        bold = bool(run.bold)
-        break
-    for run in list(p.runs):
-        run._element.getparent().remove(run._element)
-    run = p.add_run(text)
-    cn_font(run, BODY_FONT, size, bold)
+def fill_cover_value(p, value, total_width=43):
+    """Fill one cover line the same way the template does:
+
+    the label run keeps its leading indent and is *not* underlined, while the value sits on
+    the underlined blank that follows the colon, starting at the same column as 学院/专业.
+    """
+    runs = p.runs
+    if not runs:
+        return
+    label = runs[0]
+    label_text = label.text
+
+    def width(text: str) -> int:
+        return sum(2 if ord(ch) > 127 else 1 for ch in text)
+
+    for r in runs[1:]:
+        r._element.getparent().remove(r._element)
+
+    label_w = width(label_text)          # all labels in the template measure 15
+    value_col = width('     学    院：') + 9   # 学院/专业 行的取值起始列，保持对齐
+    lead = max(0, value_col - label_w)
+    body = ' ' * lead + value
+    pad = max(0, total_width - width(body))
+
+    run = p.add_run(body + ' ' * pad)
     run.underline = True
+    if label.font.size:
+        run.font.size = label.font.size
+    if label.font.name:
+        run.font.name = label.font.name
+    rpr = run._element.get_or_add_rPr()
+    rfonts = rpr.find(qn('w:rFonts'))
+    if rfonts is None:
+        rfonts = OxmlElement('w:rFonts')
+        rpr.append(rfonts)
+    rfonts.set(qn('w:eastAsia'), '宋体')
 
 
 def build_content(doc):
