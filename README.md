@@ -195,14 +195,47 @@ Tests run: 20, Failure: 0, Error: 0, Pass: 20, Ignore: 0
 
 ## 七、截图与录屏
 
-架构图与流程图已随仓库提供：
+以下均为在 HarmonyOS 5.0.5 模拟器（1260×2720）上**实际运行**截取，截图旁附有当时的 UI 文本快照
+（`*.layout.txt`），可核对画面内容。
+
+### 驾驶舱（默认状态）
+
+![驾驶舱](docs/images/01-dashboard.png)
+
+### 规则列表
+
+![规则列表](docs/images/02-rules.png)
+
+### 规则编辑与校验拦截
+
+![校验拦截](docs/images/03-rule-editor.png)
+
+### 场景演练后的联动结果
+
+![场景演练](docs/images/04-scenario-result.png)
+
+### 执行日志（执行顺序与冲突裁决）
+
+![执行日志](docs/images/05-logs.png)
+
+### 进程重启前后的持久化对比
+
+| 重启前 | 重启后 |
+| --- | --- |
+| ![重启前](docs/images/06-restore-before.png) | ![重启后](docs/images/07-restore-after.png) |
+
+### 演示录屏
+
+[`docs/demo.mp4`](docs/demo.mp4)（24 秒，630×1360，H.264；由模拟器真实画面帧序列合成——
+该模拟器镜像未内置 `screenrecord`，故用 `snapshot_display` 连续取帧后编码）
+
+### 架构图与流程图
 
 ![系统架构图](docs/images/architecture.png)
 
 ![规则执行流程图](docs/images/rule_flow.png)
 
-**运行截图待补充**：需要的 6 张截图（驾驶舱、规则列表、规则编辑、场景演练、执行日志、重启恢复对比）
-及其拍摄步骤、文件命名、插入位置，见 [`docs/截图与录屏清单.md`](docs/截图与录屏清单.md)。
+拍摄与复现方式见 [`docs/截图与录屏清单.md`](docs/截图与录屏清单.md)。
 
 ## 八、已知限制
 
@@ -211,9 +244,8 @@ Tests run: 20, Failure: 0, Error: 0, Pass: 20, Ignore: 0
 - 规则条件只支持单指标阈值比较（含 `=`），暂不支持跨指标运算或时间条件。
 - UI 采用原生组件与固定配色，未做深色模式与横屏适配。
 - 动画使用全局 `animateTo`；多窗口/多实例场景下更稳妥的写法是 `UIContext.animateTo`（见 `docs/资料核查与新技术笔记.md`）。
-- **运行截图与录屏**：本机没有已部署的模拟器 AVD，也没有可用真机；而 HAP 安装必须使用由华为账号
-  生成的调试签名（DevEco「自动签名」），无法在无账号登录的情况下完成。故以
-  `docs/截图与录屏清单.md` 的拍摄脚本交付，不提供替代性的示意图冒充真实运行结果。
+- **截图来源说明**：截图与录屏取自 DevEco 自带 HarmonyOS 5.0.5 模拟器（开发版镜像，允许安装未签名 HAP），
+  真机上的界面完全一致；录屏因镜像未内置 `screenrecord`，改用连续帧合成。
 
 ## 九、证据文件
 

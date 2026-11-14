@@ -19,3 +19,6 @@ local.properties
 # Logs / temp
 *.log
 /coverage/
+
+# transient screen-capture frames
+docs/video_frames/

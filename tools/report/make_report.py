@@ -177,6 +177,18 @@ def picture(doc, path, width_cm=15.5):
     return p
 
 
+def picture_pair(doc, left: str, right: str, width_cm=6.6):
+    """Two portraits side by side, used for the restart before/after comparison."""
+    table = doc.add_table(rows=1, cols=2)
+    table.alignment = WD_TABLE_ALIGNMENT.CENTER
+    for cell, path in zip(table.rows[0].cells, (left, right)):
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p.paragraph_format.first_line_indent = Pt(0)
+        p.add_run().add_picture(path, width=Cm(width_cm))
+    return table
+
+
 def placeholder(doc, text):
     p = doc.add_paragraph()
     set_paragraph_format(p, False, 1.3)
@@ -357,9 +369,9 @@ def build_content(doc):
               '于是同一条业务规则既有 36 条自动化测试守着，也能在真机界面上一眼看到效果。')
 
     heading(doc, '1.3. 需求完成情况', 2)
-    body(doc, '按需求说明书中的可验收清单逐项核对，全部功能均已实现并在本机验证。'
-              '其中“运行截图/录屏”一项受本机没有可用真机与模拟器的限制，'
-              '按要求以拍摄脚本形式交付（见仓库 docs/截图与录屏清单.md），其余项均有可复现证据。')
+    body(doc, '按需求说明书中的可验收清单逐项核对，全部功能均已实现，并在 HarmonyOS 5.0.5 模拟器'
+              '（1260×2720，开发版镜像）上实际运行验证，本节与第 5、6 章的截图均为真实运行画面；'
+              '每张截图旁附有当时的 UI 文本快照（docs/images/*.layout.txt），可逐条核对画面内容。')
     make_table(
         doc,
         ['编号', '功能', '完成情况与证据'],
@@ -683,6 +695,12 @@ def build_content(doc):
               'Hypium 侧则证明代码在 ArkTS 运行时的语义下同样成立（例如对象字面量、类型断言、'
               '数组与字符串处理在 ArkTS 编译后行为一致）。上表 5.1 中列出的 12 条用例在两套环境里都被执行过，'
               '结果一致。')
+    body(doc, '测试之外，冲突裁决与执行顺序在真机运行时同样得到了印证：图5.1 是模拟器上“深夜自习”场景'
+              '执行后的日志页，#1 是高优先级的“自习强补光”（书桌灯 关 → 开 90%），'
+              '#2 是被裁决掉的“光线不足基础补光”，红字标注“书桌灯：被「自习强补光」优先占用”，'
+              '与 5.1 节冲突用例的断言完全对应。')
+    picture(doc, os.path.join(ROOT, 'docs', 'images', '05-logs.png'), 6.8)
+    caption(doc, '图5.1  执行日志：执行顺序（#1/#2）与冲突裁决（真实运行截图）')
 
     heading(doc, '5.3. 问题与修复', 2)
     body(doc, '问题一：工程放在中文目录时 hvigor 直接拒绝构建。现象是执行构建后立刻报'
@@ -710,6 +728,11 @@ def build_content(doc):
               '脚本被按 ANSI 解码，路径直接认错、构建静默失败。这不是 App 代码问题，但很耽误时间。'
               '解决办法是脚本内一律使用 ASCII 路径（通过 junction 暴露工作区），'
               '需要中文内容时改用 Python 脚本处理编码。')
+    body(doc, '如图5.2 所示，模拟器上对“校验拦截”的实际表现是：新建规则时名称留空直接点保存，'
+              '页面底部出现红色“校验未通过 · 规则名称不能为空”，并停留在编辑页不允许返回，'
+              '与 validateRule 的返回结果一致。')
+    picture(doc, os.path.join(ROOT, 'docs', 'images', '03-rule-editor.png'), 6.8)
+    caption(doc, '图5.2  表单校验拦截：名称为空时保存被阻止（真实运行截图）')
 
     # ============================================================ 6 运行与总结
     heading(doc, '6. 运行与总结', 1)
@@ -725,9 +748,10 @@ def build_content(doc):
               '可以发现执行顺序与冲突结果随之变化——“自习强补光”的优先级从 6 提到 9 后，'
               '它与“光线不足基础补光”争抢书桌灯时一定赢。最后到“场景”Tab 点“梅雨午后”一键演练，'
               '环境与设备会整体切换，卡片右上角出现“上次演练”标记。')
-    placeholder(doc, '【此处插入运行截图 01-dashboard.png（驾驶舱）与 05-logs.png（执行日志）】')
-    placeholder(doc, '拍摄步骤见仓库 docs/截图与录屏清单.md 第 1、5 项；录屏见同一文件第 8 项。')
-    caption(doc, '图6.1  应用运行效果')
+    picture(doc, os.path.join(ROOT, 'docs', 'images', '01-dashboard.png'), 6.8)
+    caption(doc, '图6.1  应用运行效果：驾驶舱（默认 26.5°C / 62% / 300lux，0/4 台运行中）')
+    picture(doc, os.path.join(ROOT, 'docs', 'images', '04-scenario-result.png'), 6.8)
+    caption(doc, '图6.2  场景演练后的联动结果（深夜自习：命中 1 条规则，书桌灯被强补光规则控制）')
 
     heading(doc, '6.2. 数据恢复与集成', 2)
     body(doc, '选取“梅雨午后演练后的设备状态”作为代表性数据说明持久化链路。用户在场景页点击“一键演练”，'
@@ -745,9 +769,10 @@ def build_content(doc):
               '重启后冷却窗口就会失效，导致刚触发过的规则立刻再次触发。'
               'codec.test.ts 中“改环境 → 触发 → 保存 → 重启解析”这条用例专门断言了这一点'
               '（第三个测试文件中的 normal_restart_restores_device_state）。')
-    placeholder(doc, '【此处插入重启前后对比截图 06-restore-before.png / 07-restore-after.png】')
-    placeholder(doc, '拍摄步骤见仓库 docs/截图与录屏清单.md 第 6 项。')
-    caption(doc, '图6.2  数据恢复与集成结果')
+    picture_pair(doc,
+                 os.path.join(ROOT, 'docs', 'images', '06-restore-before.png'),
+                 os.path.join(ROOT, 'docs', 'images', '07-restore-after.png'))
+    caption(doc, '图6.3  数据恢复与集成结果：杀进程前（左）与重启后（右），环境值、设备状态与规则保持一致')
 
     heading(doc, '6.3. 个人总结', 2)
     body(doc, '这次大作业我最大的收获不是“把界面做出来”，而是把一条业务规则做成可被反复验证的东西。'
@@ -782,11 +807,10 @@ def build_content(doc):
               '并且刻意不让同一份数据同时落在两个存储里，避免跨存储一致性问题。'
               '局限也很明确：Preferences 是 KV 型、值体积有限，塞大数组迟早出问题；'
               'RDB 有建表与升级成本，小配置用它属于过度设计。')
-    body(doc, '当然也有明显没做完的部分。运行截图和录屏我没能在本机完成：这台机器上的 HarmonyOS 模拟器'
-              '镜像尚未创建 AVD，也没有可用的真机，而安装 HAP 需要华为账号的调试签名，'
-              '所以我把它们整理成了一份可照做的拍摄脚本（进入路径、操作、预期画面、文件命名、插入位置），'
-              '而不是用示意图冒充真实运行结果。另外规则的判断条件目前只支持单指标阈值比较，'
-              '没有时间条件与跨指标运算，这是有意的范围收敛，不是实现不了。'
+    body(doc, '当然也有明显还不够的部分。最遗憾的是录屏：模拟器镜像里没有 screenrecord，窗口又不在这台机器的'
+              '合成桌面上，我只能用 snapshot_display 连续取帧再编码成 24 秒的视频，观感是一帧一帧的，'
+              '不是流畅的实机录屏——真机上用系统录屏功能会好得多，这一项我如实标注而没有拿示意图充数。'
+              '另外规则判断条件目前只支持单指标阈值比较，没有时间条件与跨指标运算，这是有意的范围收敛，不是实现不了。'
               '下一步除了状态管理 V2 的改造，我还想补两件事：一是把规则条件扩展成“指标 + 时间窗”的组合，'
               '二是给 RDB 加一个按规则维度的统计查询，让日志能回答“哪条规则最常触发”这类问题。')
 
