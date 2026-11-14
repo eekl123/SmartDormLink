@@ -30,7 +30,7 @@ OUTPUT = os.path.join(WORKSPACE, '鸿蒙高级应用开发工程师认证-202303
 STUDENT = '赵硕'
 STUDENT_ID = '20230313230'
 CLASS_NAME = '23 物联网工程 2 班'
-GITHUB_USER = 'Eekl123'
+GITHUB_USER = 'eekl123'
 REPO_URL = 'https://github.com/eekl123/SmartDormLink'
 
 BODY_FONT = '宋体'
