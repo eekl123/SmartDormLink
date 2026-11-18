@@ -226,8 +226,16 @@ Tests run: 20, Failure: 0, Error: 0, Pass: 20, Ignore: 0
 
 ### 演示录屏
 
-[`docs/demo.mp4`](docs/demo.mp4)（24 秒，630×1360，H.264；由模拟器真实画面帧序列合成——
-该模拟器镜像未内置 `screenrecord`，故用 `snapshot_display` 连续取帧后编码）
+[`docs/demo.mp4`](docs/demo.mp4)（1.86 MB，630×1360，H.264，30 fps，时长 1 分 12 秒）
+
+录制方式：该模拟器镜像未内置 `screenrecord`，所以改用**设备端 4 路并发 `snapshot_display` 连拍**
+（实测 35.8 fps、共 2573 帧），再按每帧文件名里的毫秒时间戳重采样到 30 fps（2157 帧）编码成片；
+所有点击与滑动由 `uitest` 注入，一次录完 8 个环节：拖动温湿度 → 执行联动 → 手动调亮度 →
+场景演练 → 新建规则触发校验 → 查看日志与冲突裁决 → 杀进程重启恢复。
+
+- 重新录制：`python tools/dev/record_real.py`（设备在线即可，含 4 路连拍、驱动与合成）
+- 成片自检：`python tools/dev/verify_video.py`（抽帧统计画面变化、与设备实时截图比对）
+- 驱动过程日志：`docs/evidence/recording-driver-log.txt`
 
 ### 架构图与流程图
 
@@ -245,7 +253,8 @@ Tests run: 20, Failure: 0, Error: 0, Pass: 20, Ignore: 0
 - UI 采用原生组件与固定配色，未做深色模式与横屏适配。
 - 动画使用全局 `animateTo`；多窗口/多实例场景下更稳妥的写法是 `UIContext.animateTo`（见 `docs/资料核查与新技术笔记.md`）。
 - **截图来源说明**：截图与录屏取自 DevEco 自带 HarmonyOS 5.0.5 模拟器（开发版镜像，允许安装未签名 HAP），
-  真机上的界面完全一致；录屏因镜像未内置 `screenrecord`，改用连续帧合成。
+  真机上的界面完全一致。录屏因镜像未内置 `screenrecord`，改用设备端 4 路并发截帧（35.8 fps）重采样到 30 fps，
+  属于"设备端连续截帧"而不是系统级录屏：帧间隔不完全均匀，快速动画会有轻微顿感。
 
 ## 九、证据文件
 

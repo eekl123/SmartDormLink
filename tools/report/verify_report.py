@@ -40,7 +40,7 @@ for t in doc.tables:
     for row in t.rows:
         for cell in row.cells:
             text += '\n' + cell.text
-for needle in ('赵硕', '20230313230', '23 物联网工程 2 班', 'DormLink',
+for needle in ('赵硕', '20230313230', '23 物联 2 班', 'DormLink',
                'runEngine', 'Preferences', 'RDB', 'tests 36', '通过'):
     print(f'  {needle:18s}', 'OK' if needle in text else 'MISSING')
 print('\n--- git table sample ---')
